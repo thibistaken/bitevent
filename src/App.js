@@ -2,6 +2,8 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { useSelector, useDispatch } from "react-redux";
+import Button from "react-bootstrap/Button";
+import Signup from "./Signup.jsx";
 
 function App() {
   const username = useSelector(state => state.username);
@@ -24,11 +26,13 @@ function App() {
       </header>
       <h3>Make it work</h3>
       <div>Username: {username}</div>
-      <button
+      <Button
+        variant="outline-primary"
         onClick={() => dispatch({ type: "LOGIN_SUCCESS", payload: "Thibaud" })}
       >
-        Add Username
-      </button>
+        Change Username
+      </Button>
+      <Signup />
     </div>
   );
 }
