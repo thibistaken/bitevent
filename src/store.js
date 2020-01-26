@@ -1,10 +1,12 @@
 import { createStore } from "redux";
 
-const initialState = { username: "" };
+const initialState = { user: "", sessionId: "" };
 function reducer(state = initialState, action) {
   switch (action.type) {
     case "LOGIN_SUCCESS":
-      return { ...state, username: action.payload };
+      return { ...state, user: action.user };
+    case "LOGOUT":
+      return { ...state, sessionId: "" };
     default:
       return state;
   }

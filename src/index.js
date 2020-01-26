@@ -5,11 +5,26 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
 import store from "./store.js";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Home from "./Home.jsx";
+import Signup from "./Signup.jsx";
+import Login from "./Login.jsx";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Router>
+      <App />
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route exact path="/signup">
+        <Signup />
+      </Route>
+      <Route exact path="/login">
+        <Login />
+      </Route>
+    </Router>
   </Provider>,
   document.getElementById("root")
 );

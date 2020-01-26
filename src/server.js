@@ -6,6 +6,11 @@ let MongoDB = require("mongodb");
 let MongoClient = MongoDB.MongoClient;
 let ObjectId = MongoDB.ObjectId;
 let sha256 = require("js-sha256");
+const uuidv1 = require("uuid/v1");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+const sessions = {};
 
 let dbo = undefined;
 let url =
@@ -18,7 +23,6 @@ app.use("/", express.static("build")); // Needed for the HTML and JS files
 app.use("/", express.static("public")); // Needed for local assets
 
 app.post("/signup", upload.none(), (req, res) => {
-  const name = req.body.username;
   const email = req.body.email;
   const pwd = req.body.password;
   for (key in req.body) {
@@ -31,7 +35,15 @@ app.post("/signup", upload.none(), (req, res) => {
       );
     }
   }
-  dbo.collection("users").findOne({ username: name }, (err, user) => {
+  if (email === pwd) {
+    return res.send(
+      JSON.stringify({
+        success: false,
+        message: "Username and password can't be the same."
+      })
+    );
+  }
+  dbo.collection("users").findOne({ email: email }, (err, user) => {
     if (err) {
       return res.send(
         JSON.stringify({ success: false, message: "Error in the sign up." })
@@ -40,10 +52,10 @@ app.post("/signup", upload.none(), (req, res) => {
     if (user === null) {
       dbo
         .collection("users")
-        .insertOne({ username: name, email: email, password: sha256(pwd) });
+        .insertOne({ email: email, password: sha256(pwd) });
       console.log(
         "Sign up done. Username is: ",
-        name,
+        email,
         " and password is: ",
         sha256(pwd)
       );
@@ -51,7 +63,7 @@ app.post("/signup", upload.none(), (req, res) => {
         JSON.stringify({ success: true, message: "Signup is successful!" })
       );
     }
-    if (user.username === name) {
+    if (user.email === email) {
       return res.send(
         JSON.stringify({
           success: false,
@@ -63,7 +75,7 @@ app.post("/signup", upload.none(), (req, res) => {
 });
 
 app.post("/login", upload.none(), (req, res) => {
-  const name = req.body.username;
+  const email = req.body.email;
   const hashedPwd = sha256(req.body.password);
   for (key in req.body) {
     if (req.body[key] === "") {
@@ -75,7 +87,7 @@ app.post("/login", upload.none(), (req, res) => {
       );
     }
   }
-  dbo.collection("users").findOne({ username: name }, (err, user) => {
+  dbo.collection("users").findOne({ email: email }, (err, user) => {
     if (err) {
       return res.send(
         JSON.stringify({ success: false, message: "Error with this login" })
@@ -90,8 +102,16 @@ app.post("/login", upload.none(), (req, res) => {
       );
     }
     if (user.password === hashedPwd) {
+      const sessionId = uuidv1();
+      res.cookie("sid", sessionId);
+      sessions[sessionId] = email;
+      console.log("session user: ", email, "sessionId: ", sessionId);
       return res.send(
-        JSON.stringify({ success: true, message: "Succesfully logged in!" })
+        JSON.stringify({
+          success: true,
+          message: "Succesfully logged in!",
+          sessionId: sessionId
+        })
       );
     }
     return res.send(
@@ -99,12 +119,19 @@ app.post("/login", upload.none(), (req, res) => {
     );
   });
 });
+app.get("/session", (req, res) => {
+  const sid = req.cookies.sid;
 
+  if (sessions[sid]) {
+    return res.send(JSON.stringify({ success: true, user: sessions[sid] }));
+  }
+  res.send(JSON.stringify({ success: false, message: "No user session" }));
+});
 app.all("/*", (req, res, next) => {
   // needed for react router
   res.sendFile(__dirname + "/build/index.html");
 });
 
-// app.listen(4000, "0.0.0.0", () => {
-//   console.log("Server running on port 4000");
-// });
+app.listen(4000, "0.0.0.0", () => {
+  console.log("Server running on port 4000");
+});
