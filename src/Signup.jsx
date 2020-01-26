@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import Home from "./Home.jsx";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -68,6 +68,9 @@ export default function Signup() {
               Submit
             </Button>
           </Form>
+          <p>
+            Already a user? <Link to="/login">Log in</Link> instead.
+          </p>
         </div>
       ) : (
         <Home />

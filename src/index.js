@@ -10,6 +10,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./Home.jsx";
 import Signup from "./Signup.jsx";
 import Login from "./Login.jsx";
+import Create from "./Create.jsx";
+import Events from "./Events.jsx";
+import Done from "./Done.jsx";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -23,6 +26,15 @@ ReactDOM.render(
       </Route>
       <Route exact path="/login">
         <Login />
+      </Route>
+      <Route exact path="/event/new">
+        <Create />
+      </Route>
+      <Route exact path="/events">
+        <Events />
+      </Route>
+      <Route exact path="/done">
+        <Done />
       </Route>
     </Router>
   </Provider>,

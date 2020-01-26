@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 
-function NavBar() {
+export default function NavBar() {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     async function checkLoggedIn() {
@@ -22,47 +24,52 @@ function NavBar() {
     checkLoggedIn();
   }, []);
 
+  async function handleLogOut() {
+    const response = await fetch("/logout");
+    const body = await response.json();
+    if (body.success) {
+      dispatch({ type: "LOGOUT" });
+      console.log("user is logged out");
+      history.push("/");
+      return;
+    }
+    alert(body.message);
+  }
+
   return (
     <div>
       <Navbar bg="light">
-        <Link to="/">
+        <LinkContainer to="/">
           <Navbar.Brand>BitEvent</Navbar.Brand>
-        </Link>
+        </LinkContainer>
         <Nav className="mr-auto">
-          <Link to="/events">
+          <LinkContainer to="/events">
             <Nav.Link>Events</Nav.Link>
-          </Link>
-          <Link to="/create">
+          </LinkContainer>
+          <LinkContainer to="/event/new">
             <Nav.Link>Create</Nav.Link>
-          </Link>
+          </LinkContainer>
         </Nav>
         {!user ? (
           <>
-            <Link to="/login">
+            <LinkContainer to="/login">
               <Button variant="outline-secondary">Log In</Button>
-            </Link>
-            <Link to="/signup">
+            </LinkContainer>
+            <LinkContainer to="/signup">
               <Button variant="primary" type="button">
                 Sign Up
               </Button>
-            </Link>
+            </LinkContainer>
           </>
         ) : (
           <>
-            <Navbar.Text>Signed in as :{user}</Navbar.Text>
-            <Link to="/">
-              <Button
-                variant="outline-danger"
-                onClick={() => dispatch({ type: "LOGOUT" })}
-              >
-                Logout
-              </Button>
-            </Link>
+            <Navbar.Text>Signed in as: {user}</Navbar.Text>
+            <Button variant="outline-danger" onClick={() => handleLogOut()}>
+              Logout
+            </Button>
           </>
         )}
       </Navbar>
     </div>
   );
 }
-
-export default NavBar;

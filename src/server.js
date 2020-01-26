@@ -106,6 +106,7 @@ app.post("/login", upload.none(), (req, res) => {
       res.cookie("sid", sessionId);
       sessions[sessionId] = email;
       console.log("session user: ", email, "sessionId: ", sessionId);
+      console.log("Cookies: ", req.cookies);
       return res.send(
         JSON.stringify({
           success: true,
@@ -119,13 +120,35 @@ app.post("/login", upload.none(), (req, res) => {
     );
   });
 });
+app.get("/logout", (req, res) => {
+  res.clearCookie("sid");
+  res.send(JSON.stringify({ success: true, message: "cookie sid is cleared" }));
+});
 app.get("/session", (req, res) => {
   const sid = req.cookies.sid;
-
   if (sessions[sid]) {
     return res.send(JSON.stringify({ success: true, user: sessions[sid] }));
   }
   res.send(JSON.stringify({ success: false, message: "No user session" }));
+});
+
+const photosUpload = upload.fields([{ name: "photo", maxCount: 3 }]);
+
+app.post("/new-event", photosUpload, (req, res) => {
+  const name = req.body.name;
+  const desc = req.body.desc;
+  const time = req.body.time;
+  const location = req.body.location;
+  const guests = req.body.guests;
+  const photos = req.files["photo"];
+
+  dbo
+    .collection("events")
+    .insertOne({ name, desc, time, location, guests, photos });
+  console.log("event posted:", name, desc);
+  return res.send(
+    JSON.stringify({ success: true, message: "event submitted successfully" })
+  );
 });
 app.all("/*", (req, res, next) => {
   // needed for react router

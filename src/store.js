@@ -6,7 +6,7 @@ function reducer(state = initialState, action) {
     case "LOGIN_SUCCESS":
       return { ...state, user: action.user };
     case "LOGOUT":
-      return { ...state, sessionId: "" };
+      return { ...state, user: "", sessionId: "" };
     default:
       return state;
   }

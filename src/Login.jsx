@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Home from "./Home.jsx";
 
 export default function Login() {
@@ -10,7 +10,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const username = useSelector(state => state.username);
-  const session = useSelector(state => state.sessionId);
   const history = useHistory();
 
   async function handleSubmit(event) {
@@ -29,7 +28,7 @@ export default function Login() {
         user: email,
         sessionId: body.sessionId
       });
-      history.push("/home");
+      history.push("/");
       return;
     }
     alert(body.message);
@@ -38,33 +37,38 @@ export default function Login() {
   return (
     <div>
       {!username ? (
-        <Form>
-          <h2>Log In</h2>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              onChange={event => setEmail(event.target.value)}
-            />
-          </Form.Group>
+        <div>
+          <Form>
+            <h2>Log In</h2>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                onChange={event => setEmail(event.target.value)}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              onChange={event => setPassword(event.target.value)}
-            />
-          </Form.Group>
-          <Button
-            variant="primary"
-            type="submit"
-            onClick={event => handleSubmit(event)}
-          >
-            Submit
-          </Button>
-        </Form>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                onChange={event => setPassword(event.target.value)}
+              />
+            </Form.Group>
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={event => handleSubmit(event)}
+            >
+              Submit
+            </Button>
+          </Form>
+          <p>
+            Not a user yet? <Link to="/signup">Sign up</Link> instead.
+          </p>
+        </div>
       ) : (
         <Home />
       )}
