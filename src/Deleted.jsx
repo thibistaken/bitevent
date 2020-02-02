@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function Done() {
+export default function Deleted() {
   return (
     <div>
-      <h1>Event is posted!</h1>
+      <h1>Event is deleted!</h1>
       <p>
-        View all other <Link to="/events">events</Link>
+        View the other <Link to="/events">events</Link>
       </p>
     </div>
   );

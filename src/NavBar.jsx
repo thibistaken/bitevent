@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 
 export default function NavBar() {
@@ -22,7 +22,7 @@ export default function NavBar() {
       }
     }
     checkLoggedIn();
-  }, []);
+  }, [user, dispatch]);
 
   async function handleLogOut() {
     const response = await fetch("/logout");
@@ -46,7 +46,7 @@ export default function NavBar() {
           <LinkContainer to="/events">
             <Nav.Link>Events</Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/event/new">
+          <LinkContainer to="/new/event">
             <Nav.Link>Create</Nav.Link>
           </LinkContainer>
         </Nav>
@@ -63,7 +63,9 @@ export default function NavBar() {
           </>
         ) : (
           <>
-            <Navbar.Text>Signed in as: {user}</Navbar.Text>
+            <LinkContainer to="/profile">
+              <Navbar.Text>Signed in as: {user}</Navbar.Text>
+            </LinkContainer>
             <Button variant="outline-danger" onClick={() => handleLogOut()}>
               Logout
             </Button>

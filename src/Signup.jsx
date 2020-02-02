@@ -28,7 +28,7 @@ export default function Signup() {
         user: email,
         sessionId: body.sessionId
       });
-      history.push("/home");
+      history.push("/");
       return;
     }
     alert(body.message);

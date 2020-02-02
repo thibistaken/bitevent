@@ -14,7 +14,6 @@ export default function Login() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log("req sent to /login endpoint");
     const data = new FormData();
     data.append("email", email);
     data.append("password", password);

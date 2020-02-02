@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import Login from "./Login.jsx";
 
 export default function Create() {
@@ -10,40 +10,51 @@ export default function Create() {
   const [desc, setDesc] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
-  const [guests, setGuests] = useState(0);
-  const [photos, setPhotos] = useState("");
+  const [capacity, setCapacity] = useState(0);
+  const [photos, setPhotos] = useState([]);
   const username = useSelector(state => state.user);
+  console.log("username", username);
   const history = useHistory();
 
   async function handleSubmit(event) {
     event.preventDefault();
+    const d = new Date();
+    const timestamp = d.toLocaleString();
     const data = new FormData();
     data.append("name", name);
     data.append("desc", desc);
     data.append("time", time);
     data.append("location", location);
-    data.append("guests", guests);
-    data.append("photos", photos);
+    data.append("capacity", capacity);
+    data.append("username", username);
+    data.append("timestamp", timestamp);
+    for (const photo of photos) {
+      data.append("photo", photo);
+    }
     const response = await fetch("/new-event", { method: "POST", body: data });
     const body = await response.json();
     if (body.success) {
-      alert(body.message);
+      console.log("new event created!");
+      console.log("timestamp", timestamp);
       history.push("/done");
+      alert(body.message);
+      return;
     }
-    return;
+    alert(body.message);
   }
   return (
     <div>
       {username ? (
         <div>
           <Form>
-            <h2>Create an event</h2>
+            <h1>Create an Event</h1>
             <Form.Group controlId="formBasicName">
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter the name of your event"
                 onChange={event => setName(event.target.value)}
+                required
               />
             </Form.Group>
 
@@ -53,6 +64,7 @@ export default function Create() {
                 type="text"
                 placeholder="Description of your event"
                 onChange={event => setDesc(event.target.value)}
+                required
               />
             </Form.Group>
             <Form.Group controlId="formBasicTime">
@@ -61,6 +73,7 @@ export default function Create() {
                 type="number"
                 placeholder="Time of your event"
                 onChange={event => setTime(event.target.value)}
+                required
               />
             </Form.Group>
             <Form.Group controlId="formBasicLocation">
@@ -69,24 +82,27 @@ export default function Create() {
                 type="text"
                 placeholder="Location of your event"
                 onChange={event => setLocation(event.target.value)}
+                required
               />
             </Form.Group>
-            <Form.Group controlId="formBasicGuests">
-              <Form.Label>Guests</Form.Label>
+            <Form.Group controlId="formBasicCapacity">
+              <Form.Label>Capacity</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Number of guests"
-                onChange={event => setGuests(event.target.value)}
+                onChange={event => setCapacity(event.target.value)}
+                required
               />
             </Form.Group>
             <Form.Group controlId="formBasicPhotos">
-              <Form.Label>Photos</Form.Label>
+              <Form.Label>Photo</Form.Label>
               <Form.Control
                 type="file"
+                name="photos"
                 multiple
-                name="photo"
-                placeholder="Photos for your event"
-                onChange={event => setPhotos(event.target.value)}
+                placeholder="Add one photo for your event"
+                onChange={event => setPhotos(event.target.files)}
+                required
               />
             </Form.Group>
 

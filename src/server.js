@@ -1,7 +1,7 @@
 let express = require("express");
-let app = express();
 let multer = require("multer");
 let upload = multer({ dest: "uploads/" });
+let app = express();
 let MongoDB = require("mongodb");
 let MongoClient = MongoDB.MongoClient;
 let ObjectId = MongoDB.ObjectId;
@@ -9,7 +9,6 @@ let sha256 = require("js-sha256");
 const uuidv1 = require("uuid/v1");
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
-
 const sessions = {};
 
 let dbo = undefined;
@@ -21,6 +20,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
 
 app.use("/", express.static("build")); // Needed for the HTML and JS files
 app.use("/", express.static("public")); // Needed for local assets
+app.use("/uploads", express.static("uploads"));
 
 app.post("/signup", upload.none(), (req, res) => {
   const email = req.body.email;
@@ -120,6 +120,23 @@ app.post("/login", upload.none(), (req, res) => {
     );
   });
 });
+app.get("/event", (req, res) => {
+  const eventId = req.query.id;
+  console.log("eventId", eventId);
+  dbo.collection("events").findOne({ _id: ObjectId(eventId) }, (err, event) => {
+    if (err) {
+      return res.send(
+        JSON.stringify({ success: false, message: "Error with this event" })
+      );
+    }
+    if (event === null) {
+      return res.send(
+        JSON.stringify({ success: false, message: "There is no such event." })
+      );
+    }
+    return res.send(JSON.stringify({ success: true, event }));
+  });
+});
 app.get("/logout", (req, res) => {
   res.clearCookie("sid");
   res.send(JSON.stringify({ success: true, message: "cookie sid is cleared" }));
@@ -131,25 +148,84 @@ app.get("/session", (req, res) => {
   }
   res.send(JSON.stringify({ success: false, message: "No user session" }));
 });
-
-const photosUpload = upload.fields([{ name: "photo", maxCount: 3 }]);
-
-app.post("/new-event", photosUpload, (req, res) => {
+// app.get("/events/attending", async function(req, res) {
+//   const
+//   await dbo.collection("events").find({ attendees:  });
+// });
+app.post("/new-event", upload.array("photo", 3), function(req, res) {
   const name = req.body.name;
   const desc = req.body.desc;
-  const time = req.body.time;
+  const time = Number(req.body.time);
+  const timestamp = req.body.timestamp;
   const location = req.body.location;
-  const guests = req.body.guests;
-  const photos = req.files["photo"];
-
-  dbo
-    .collection("events")
-    .insertOne({ name, desc, time, location, guests, photos });
-  console.log("event posted:", name, desc);
+  const capacity = Number(req.body.capacity);
+  const username = req.body.username;
+  const files = req.files;
+  for (key in req.body) {
+    if (req.body[key] === "") {
+      return res.send(
+        JSON.stringify({ success: false, message: `${key} cannot be empty` })
+      );
+    }
+  }
+  let filePaths = files.map(file => {
+    return "/uploads/" + file.filename;
+  });
+  dbo.collection("events").insertOne({
+    name,
+    desc,
+    time,
+    location,
+    capacity,
+    username,
+    timestamp,
+    filePaths
+  });
+  console.log("event posted");
   return res.send(
     JSON.stringify({ success: true, message: "event submitted successfully" })
   );
 });
+
+app.get("/delete-event", async function(req, res) {
+  const eventId = req.query.id;
+  try {
+    await dbo.collection("events").deleteOne({ _id: ObjectId(eventId) });
+    res.send(JSON.stringify({ success: true, message: "Event was deleted." }));
+  } catch (err) {
+    console.log("error");
+  }
+});
+app.post("/register-event", upload.none(), async function(req, res) {
+  const username = req.body.username;
+  console.log("username", username);
+  const eventId = req.body.eventId;
+  await dbo.collection("events").updateOne(
+    { _id: ObjectId(eventId) },
+    {
+      $inc: { capacity: -1 },
+      $push: { attendees: username }
+    }
+  );
+  return res.send(
+    JSON.stringify({ success: true, message: "Succesfully registered." })
+  );
+});
+app.get("/all-events", async function(req, res) {
+  console.log("client req to fetch all events");
+  try {
+    const events = await dbo
+      .collection("events")
+      .find({})
+      .toArray();
+    res.send(
+      JSON.stringify({ success: true, message: "all events fetched", events })
+    );
+  } catch (err) {
+    console.log("error");
+  }
+});
+
 app.all("/*", (req, res, next) => {
   // needed for react router
   res.sendFile(__dirname + "/build/index.html");
