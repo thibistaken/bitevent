@@ -5,11 +5,10 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 export default function EventDetails(props) {
   const [event, setEvent] = useState(undefined);
-  const username = useSelector(state => state.user);
   const eventId = props.match.params.eventId;
   const history = useHistory();
   const dispatch = useDispatch();
@@ -34,33 +33,30 @@ export default function EventDetails(props) {
       history.push("/deleted");
     }
   }
-  async function handleRegisterEvent() {
-    const data = new FormData();
-    data.append("username", username);
-    console.log("username", username);
-    data.append("eventId", eventId);
-    const response = await fetch("/register-event", {
-      method: "POST",
-      body: data
-    });
-    const body = await response.json();
-    if (body.success) {
-      dispatch({ type: "RSVP" });
-      history.push("/register");
-    }
-  }
 
   return event ? (
     <div>
       <Card>
         <h2>{event.name}</h2>
         <ListGroup variant="flush">
-          <ListGroup.Item>Name: {event.desc}</ListGroup.Item>
-          <ListGroup.Item>Time: {event.time}</ListGroup.Item>
+          <ListGroup.Item>{event.desc}</ListGroup.Item>
+          <ListGroup.Item>Start Time: {event.startTime}</ListGroup.Item>
+          <ListGroup.Item>End Time: {event.endTime}</ListGroup.Item>
           <ListGroup.Item>Capacity: {event.capacity} </ListGroup.Item>
           <ListGroup.Item>Location: {event.location}</ListGroup.Item>
         </ListGroup>
         <h2>Confirmed Attendees</h2>
+        <ul>
+          {!event.attendees ? (
+            <div>No attendees for now.</div>
+          ) : (
+            <div>
+              {event.attendees.map((attendee, idx) => {
+                return <li key={idx}>{attendee}</li>;
+              })}
+            </div>
+          )}
+        </ul>
       </Card>
       <LinkContainer to="/events">
         <Button variant="outline-secondary">Back to Events</Button>
@@ -68,9 +64,14 @@ export default function EventDetails(props) {
       <Button variant="outline-danger" onClick={() => handleDeleteEvent()}>
         Delete Event
       </Button>
-      <Button variant="outline-primary" onClick={() => handleRegisterEvent()}>
-        RSVP
-      </Button>
+      <LinkContainer to={`/register/${eventId}`}>
+        <Button
+          variant="outline-primary"
+          onClick={() => dispatch({ type: "RSVP", registerEvent: event })}
+        >
+          RSVP
+        </Button>
+      </LinkContainer>
     </div>
   ) : (
     <div>why wait?</div>

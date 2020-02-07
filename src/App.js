@@ -10,7 +10,9 @@ import Events from "./Events.jsx";
 import Done from "./Done.jsx";
 import Profile from "./Profile.jsx";
 import EventDetails from "./EventDetails.jsx";
+import EventRegister from "./EventRegister.jsx";
 import Deleted from "./Deleted.jsx";
+import Registered from "./Registered.jsx";
 import "./App.css";
 
 function App() {
@@ -48,8 +50,12 @@ function App() {
       <Route exact path="/events">
         <Events />
       </Route>
+      <Route exact path="/register/:eventId" component={EventRegister} />
       <Route exact path="/done">
         <Done />
+      </Route>
+      <Route exact path="/registered">
+        <Registered />
       </Route>
       <Route exact path="/profile">
         <Profile />

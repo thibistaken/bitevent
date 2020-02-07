@@ -155,7 +155,9 @@ app.get("/session", (req, res) => {
 app.post("/new-event", upload.array("photo", 3), function(req, res) {
   const name = req.body.name;
   const desc = req.body.desc;
-  const time = Number(req.body.time);
+  const date = req.body.date;
+  const startTime = req.body.startTime;
+  const endTime = req.body.endTime;
   const timestamp = req.body.timestamp;
   const location = req.body.location;
   const capacity = Number(req.body.capacity);
@@ -174,7 +176,9 @@ app.post("/new-event", upload.array("photo", 3), function(req, res) {
   dbo.collection("events").insertOne({
     name,
     desc,
-    time,
+    date,
+    startTime,
+    endTime,
     location,
     capacity,
     username,

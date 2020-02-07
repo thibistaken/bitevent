@@ -15,11 +15,8 @@ export default function Events() {
   useEffect(() => {
     async function loadEvents() {
       const response = await fetch("/all-events");
-      console.log(response);
       const body = await response.json();
       if (body.success) {
-        console.log("body.events", body.events);
-        console.log("events are being displayed");
         dispatch({ type: "NEW_EVENTS", events: body.events });
       }
     }
@@ -62,8 +59,9 @@ export default function Events() {
                           )}
                         </Card.Title>
                         <Card.Text>{event.desc}</Card.Text>
-                        <Card.Text>Time: {event.time}</Card.Text>
-                        <Card.Text>Capacity: {event.capacity}</Card.Text>
+                        <Card.Text>Date: {event.date}</Card.Text>
+                        <Card.Text>Time: {event.startTime}</Card.Text>
+                        <Card.Text>Capacity: {event.capacity} people</Card.Text>
                         <LinkContainer to={`/event/${event._id}`}>
                           <Button variant="primary">View Event Details</Button>
                         </LinkContainer>

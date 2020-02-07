@@ -4,11 +4,14 @@ import Button from "react-bootstrap/Button";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Login from "./Login.jsx";
+import "./Create.css";
 
 export default function Create() {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [location, setLocation] = useState("");
   const [capacity, setCapacity] = useState(0);
   const [photos, setPhotos] = useState([]);
@@ -23,7 +26,9 @@ export default function Create() {
     const data = new FormData();
     data.append("name", name);
     data.append("desc", desc);
-    data.append("time", time);
+    data.append("date", date);
+    data.append("startTime", startTime);
+    data.append("endTime", endTime);
     data.append("location", location);
     data.append("capacity", capacity);
     data.append("username", username);
@@ -45,7 +50,7 @@ export default function Create() {
   return (
     <div>
       {username ? (
-        <div>
+        <div className="form-wrapper">
           <Form>
             <h1>Create an Event</h1>
             <Form.Group controlId="formBasicName">
@@ -67,14 +72,33 @@ export default function Create() {
                 required
               />
             </Form.Group>
-            <Form.Group controlId="formBasicTime">
-              <Form.Label>Time</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Time of your event"
-                onChange={event => setTime(event.target.value)}
-                required
-              />
+            <Form.Group>
+              <Form.Label>
+                Date
+                <Form.Control
+                  type="date"
+                  onChange={event => setDate(event.target.value)}
+                  required
+                />
+              </Form.Label>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>
+                Start Time
+                <Form.Control
+                  type="time"
+                  onChange={event => setStartTime(event.target.value)}
+                  required
+                />
+              </Form.Label>
+              <Form.Label>
+                End Time
+                <Form.Control
+                  type="time"
+                  onChange={event => setEndTime(event.target.value)}
+                  required
+                />
+              </Form.Label>
             </Form.Group>
             <Form.Group controlId="formBasicLocation">
               <Form.Label>Location</Form.Label>

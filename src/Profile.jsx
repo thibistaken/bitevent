@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -7,22 +7,14 @@ export default function Profile() {
   const events = useSelector(state => state.events);
   console.log(events.length);
   const userEvents = events.filter(event => event.username === username);
-
-  //   useEffect(() => {
-  //     async function fetchEventsAttending() {
-  //       const response = await fetch("/events/attending");
-  //       const body = await response.json();
-  //       if (body.success) {
-  //         console.log(body.message);
-  //       }
-  //     }
-  //     fetchEventsAttending();
-  //   }, []);
-
+  const eventsAttending = events.filter(
+    event =>
+      username === event.attendees.filter(attendee => attendee === username)
+  );
   return (
     <div>
       <h1>Hello, {username}</h1>
-      <h2>Events created</h2>
+      <h2>Events created ({userEvents.length})</h2>
       <ul>
         {userEvents.map((event, idx) => {
           return (
@@ -32,8 +24,12 @@ export default function Profile() {
           );
         })}
       </ul>
-      <h2>Events attending</h2>
-      <ul></ul>
+      <h2>Events attending ({eventsAttending.length})</h2>
+      <ul>
+        {eventsAttending.map(event => {
+          return <li>{event.name}</li>;
+        })}
+      </ul>
     </div>
   );
 }
