@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Login from "./Login.jsx";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -6,12 +6,27 @@ import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import Badge from "react-bootstrap/Badge";
+import Form from "react-bootstrap/Form";
 import "./Events.css";
 
 export default function Events() {
   const username = useSelector(state => state.user);
-  const events = useSelector(state => state.events);
+  const nonFilteredEvents = useSelector(state => state.events);
+  console.log("non-filtered", nonFilteredEvents);
+  const [eventSearchName, setEventSearchName] = useState("");
+  const [eventSearchCategory, setEventSearchCategory] = useState("");
+  const [eventSearchDate, setEventSearchDate] = useState("");
   const dispatch = useDispatch();
+  const eventsFiltered = nonFilteredEvents.filter(event => {
+    return event.name.includes(eventSearchName) &&
+      event.category.includes(eventSearchCategory) &&
+      !eventSearchDate
+      ? true
+      : new Date(event.date) >= new Date(eventSearchDate);
+  });
+
+  console.log("filtered events", eventsFiltered);
+
   useEffect(() => {
     async function loadEvents() {
       const response = await fetch("/all-events");
@@ -28,18 +43,54 @@ export default function Events() {
       {username ? (
         <div>
           <h1>Discover Bitcoin Events</h1>
-          <LinkContainer to="/new/event">
-            <Button>Create an Event</Button>
-          </LinkContainer>
+          <Form inline>
+            <Form.Control
+              type="text"
+              placeholder="Search"
+              className="mr-sm-2"
+              onChange={event => setEventSearchName(event.target.value)}
+            />
+
+            <Form.Group controlId="formBasicCapacity">
+              <Form.Label>Event Type</Form.Label>
+              <Form.Control
+                as="select"
+                onChange={event => setEventSearchCategory(event.target.value)}
+              >
+                <option value="" defaultValue>
+                  All
+                </option>
+                <option value="Bitcoin Meetup">Bitcoin Meetup</option>
+                <option value="Conference">Conference</option>
+                <option value="Socratic Seminar">Socratic Seminar</option>
+                <option value="Schelling Dinner">Schelling Dinner</option>
+                <option value="BBQ">BBQ</option>
+              </Form.Control>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>
+                Date
+                <Form.Control
+                  type="date"
+                  onChange={event => setEventSearchDate(event.target.value)}
+                  required
+                />
+              </Form.Label>
+            </Form.Group>
+            <Button type="submit" variant="outline-success">
+              Search
+            </Button>
+          </Form>
+
           <div>
-            {events.length === 0 ? (
+            {eventsFiltered.length === 0 ? (
               <div>
                 Sorry, no events! Go <Link to="/new/event">create one</Link>{" "}
                 now!
               </div>
             ) : (
               <div className="events-wrapper">
-                {events.map((event, idx) => {
+                {eventsFiltered.map((event, idx) => {
                   return (
                     <Card style={{ width: "auto" }} key={idx}>
                       <Card.Body>

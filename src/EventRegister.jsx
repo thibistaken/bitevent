@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
@@ -8,12 +8,14 @@ import { useHistory } from "react-router-dom";
 export default function EventRegister(props) {
   const eventId = props.match.params.eventId;
   const registerEvent = useSelector(state => state.registerEvent);
-  const username = useSelector(state => state.user);
+  const email = useSelector(state => state.user);
+  const [username, setUsername] = useState("");
   const history = useHistory();
 
-  async function handleRegisterEvent() {
+  async function handleRegisterEvent(event) {
+    event.preventDefault();
     const data = new FormData();
-    data.append("username", username);
+    data.append("email", email);
     data.append("eventId", eventId);
     const response = await fetch("/register-event", {
       method: "POST",
@@ -42,14 +44,14 @@ export default function EventRegister(props) {
           <Form.Control
             type="text"
             placeholder="Your name, or pseudonym."
+            onChange={event => setUsername(event.target.value)}
           ></Form.Control>
         </Form.Group>
         <Form.Group>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Your email to send your ticket. We will destruct it after the event."
-          ></Form.Control>
+          <Form.Label>
+            We will send your ticket to the email you've already provided:{" "}
+            {email}{" "}
+          </Form.Label>
         </Form.Group>
         <Button variant="secondary" onClick={() => history.goBack()}>
           Back

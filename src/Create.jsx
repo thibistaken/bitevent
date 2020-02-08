@@ -13,6 +13,7 @@ export default function Create() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [location, setLocation] = useState("");
+  const [category, setCategory] = useState("");
   const [capacity, setCapacity] = useState(0);
   const [photos, setPhotos] = useState([]);
   const username = useSelector(state => state.user);
@@ -29,6 +30,7 @@ export default function Create() {
     data.append("date", date);
     data.append("startTime", startTime);
     data.append("endTime", endTime);
+    data.append("category", category);
     data.append("location", location);
     data.append("capacity", capacity);
     data.append("username", username);
@@ -100,16 +102,23 @@ export default function Create() {
                 />
               </Form.Label>
             </Form.Group>
-            <Form.Group controlId="formBasicLocation">
+            <Form.Group>
               <Form.Label>Location</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Location of your event"
-                onChange={event => setLocation(event.target.value)}
-                required
-              />
+                as="select"
+                onClick={event => setLocation(event.target.value)}
+              >
+                <option value="Montreal" defaultValue>
+                  Montreal
+                </option>
+                <option value="Toronto">Toronto</option>
+                <option value="Ottawa">Ottawa</option>
+                <option value="Quebec City">Quebec City</option>
+                <option value="Vancouver">Vancouver</option>
+                <option value="Halifax">Halifax</option>
+              </Form.Control>
             </Form.Group>
-            <Form.Group controlId="formBasicCapacity">
+            <Form.Group>
               <Form.Label>Capacity</Form.Label>
               <Form.Control
                 type="number"
@@ -117,6 +126,21 @@ export default function Create() {
                 onChange={event => setCapacity(event.target.value)}
                 required
               />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Event Type</Form.Label>
+              <Form.Control
+                as="select"
+                onClick={event => setCategory(event.target.value)}
+              >
+                <option value="Bitcoin Meetup" defaultValue>
+                  Bitcoin Meetup
+                </option>
+                <option value="Conference">Conference</option>
+                <option value="Socratic Seminar">Socratic Seminar</option>
+                <option value="Schelling Dinner">Schelling Dinner</option>
+                <option value="BBQ">BBQ</option>
+              </Form.Control>
             </Form.Group>
             <Form.Group controlId="formBasicPhotos">
               <Form.Label>Photo</Form.Label>

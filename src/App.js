@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NavBar from "./NavBar.jsx";
 import Home from "./Home.jsx";
 import Signup from "./Signup.jsx";
@@ -17,6 +17,7 @@ import "./App.css";
 
 function App() {
   const dispatch = useDispatch();
+  const loggedIn = useSelector(state => state.user);
   useEffect(() => {
     async function loadEvents() {
       const response = await fetch("/all-events");
@@ -31,9 +32,41 @@ function App() {
     loadEvents();
   }, [dispatch]);
 
-  return (
+  return loggedIn ? (
     <div>
       <NavBar />
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route exact path="/signup">
+        <Signup />
+      </Route>
+      <Route exact path="/login">
+        <Login />
+      </Route>
+      <Route path="/new/event">
+        <Create />
+      </Route>
+      <Route exact path="/event/:eventId" component={EventDetails} />
+      <Route exact path="/events">
+        <Events />
+      </Route>
+      <Route exact path="/register/:eventId" component={EventRegister} />
+      <Route exact path="/done">
+        <Done />
+      </Route>
+      <Route exact path="/registered">
+        <Registered />
+      </Route>
+      <Route exact path="/profile">
+        <Profile />
+      </Route>
+      <Route exact path="/deleted">
+        <Deleted />
+      </Route>
+    </div>
+  ) : (
+    <div>
       <Route exact path="/">
         <Home />
       </Route>

@@ -122,7 +122,6 @@ app.post("/login", upload.none(), (req, res) => {
 });
 app.get("/event", (req, res) => {
   const eventId = req.query.id;
-  console.log("eventId", eventId);
   dbo.collection("events").findOne({ _id: ObjectId(eventId) }, (err, event) => {
     if (err) {
       return res.send(
@@ -148,10 +147,7 @@ app.get("/session", (req, res) => {
   }
   res.send(JSON.stringify({ success: false, message: "No user session" }));
 });
-// app.get("/events/attending", async function(req, res) {
-//   const
-//   await dbo.collection("events").find({ attendees:  });
-// });
+
 app.post("/new-event", upload.array("photo", 3), function(req, res) {
   const name = req.body.name;
   const desc = req.body.desc;
@@ -160,9 +156,11 @@ app.post("/new-event", upload.array("photo", 3), function(req, res) {
   const endTime = req.body.endTime;
   const timestamp = req.body.timestamp;
   const location = req.body.location;
+  const category = req.body.category;
   const capacity = Number(req.body.capacity);
   const username = req.body.username;
   const files = req.files;
+  const attendees = [];
   for (key in req.body) {
     if (req.body[key] === "") {
       return res.send(
@@ -181,8 +179,10 @@ app.post("/new-event", upload.array("photo", 3), function(req, res) {
     endTime,
     location,
     capacity,
+    category,
     username,
     timestamp,
+    attendees,
     filePaths
   });
   console.log("event posted");
@@ -201,14 +201,13 @@ app.get("/delete-event", async function(req, res) {
   }
 });
 app.post("/register-event", upload.none(), async function(req, res) {
-  const username = req.body.username;
-  console.log("username", username);
+  const email = req.body.email;
   const eventId = req.body.eventId;
   await dbo.collection("events").updateOne(
     { _id: ObjectId(eventId) },
     {
       $inc: { capacity: -1 },
-      $push: { attendees: username }
+      $push: { attendees: email }
     }
   );
   return res.send(

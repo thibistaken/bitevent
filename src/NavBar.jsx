@@ -8,21 +8,20 @@ import { LinkContainer } from "react-router-bootstrap";
 
 export default function NavBar() {
   const user = useSelector(state => state.user);
+  console.log("user", user);
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
     async function checkLoggedIn() {
-      const data = new FormData();
-      data.append("user", user);
       const response = await fetch("/session");
       const body = await response.json();
       if (body.user) {
-        dispatch({ type: "LOGIN_SUCCESS", user: body.user });
+        dispatch({ type: "LOGIN_SUCCESS", email: body.user });
       }
     }
     checkLoggedIn();
-  }, [user, dispatch]);
+  }, [dispatch]);
 
   async function handleLogOut() {
     const response = await fetch("/logout");

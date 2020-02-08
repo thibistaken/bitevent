@@ -6,10 +6,10 @@ import { Link, useHistory } from "react-router-dom";
 import Home from "./Home.jsx";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(undefined);
+  const [password, setPassword] = useState(undefined);
   const dispatch = useDispatch();
-  const username = useSelector(state => state.username);
+  const loggedIn = useSelector(state => state.user);
   const history = useHistory();
 
   async function handleSubmit(event) {
@@ -24,7 +24,7 @@ export default function Login() {
       alert(body.message);
       dispatch({
         type: "LOGIN_SUCCESS",
-        user: email,
+        email: email,
         sessionId: body.sessionId
       });
       history.push("/");
@@ -35,7 +35,7 @@ export default function Login() {
 
   return (
     <div>
-      {!username ? (
+      {!loggedIn ? (
         <div>
           <Form>
             <h2>Log In</h2>

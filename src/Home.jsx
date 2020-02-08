@@ -1,24 +1,67 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import { LinkContainer } from "react-router-bootstrap";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Home() {
+  const loggedIn = useSelector(state => state.user);
+  const Container = styled.section`
+    display: flex;
+    justify-content: center;
+    color: white;
+    padding: 180px;
+    height: 100vh;
+    background-color: #f2a900;
+  `;
+  const Title = styled.h1`
+    font-weight: 900;
+    font-size: 150px;
+    line-height: 90%;
+    width: 600px;
+    font-family: "Source Sans Pro", sans-serif;
+  `;
+  const StyledLink = styled.a`
+    font-family: "Courier New";
+    color: white;
+    font-size: 2em;
+  `;
+  const Paragraph = styled.p`
+    font-family: "Open Sans";
+  `;
+  const FlexSection = styled.div`
+    justify-content: center;
+  `;
+  const Image = styled.img`
+    animation: rotation 3s infinite linear;
+    width: 80px;
+    @keyframes rotation {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(359deg);
+      }
+    }
+  `;
   return (
-    <div>
-      <h1>Meet Local Bitcoiners</h1>
-      <p>
-        One of the best things on this planet is meeting with your local bitcoin
-        community. Too often, organizing events relies on Meetup and Eventbrite,
-        which charge fees (even for free events) and hold cash in escrow for a
-        few business days after the event is done. There is also no way to RSVP
-        to an event in a private way. We're trying to fix this.
-      </p>
-      <LinkContainer to="/events">
-        <Button variant="primary" type="button">
-          Browse Events
-        </Button>
-      </LinkContainer>
-    </div>
+    <Container>
+      <Title>BITCOIN ONLY. BE MAXI.</Title>
+      {loggedIn ? (
+        <StyledLink>
+          <Link to="/events">Browse Events</Link>
+        </StyledLink>
+      ) : (
+        <FlexSection>
+          <Paragraph>
+            Meet local bitcoiners in your city. Starting in Montreal.
+          </Paragraph>
+          <Image src="/uploads/btclogo.png" />
+          <StyledLink>
+            <Link to="/events">>> Create an account</Link>
+          </StyledLink>
+        </FlexSection>
+      )}
+    </Container>
   );
 }
 

@@ -47,7 +47,7 @@ export default function EventDetails(props) {
         </ListGroup>
         <h2>Confirmed Attendees</h2>
         <ul>
-          {!event.attendees ? (
+          {event.attendees.length === 0 ? (
             <div>No attendees for now.</div>
           ) : (
             <div>

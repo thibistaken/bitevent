@@ -1,10 +1,15 @@
 import { createStore } from "redux";
 
-const initialState = { user: "", sessionId: "", events: [], registerEvent: "" };
+const initialState = {
+  user: undefined,
+  sessionId: "",
+  events: [],
+  registerEvent: ""
+};
 function reducer(state = initialState, action) {
   switch (action.type) {
     case "LOGIN_SUCCESS":
-      return { ...state, user: action.user };
+      return { ...state, user: action.email };
     case "NEW_EVENTS":
       return { ...state, events: action.events };
     case "LOGOUT":
