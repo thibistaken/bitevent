@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import Home from "./Home.jsx";
 import { Link, useHistory } from "react-router-dom";
+import TitleMedium from "./styles/TitleMedium.jsx";
+import Container from "./styles/Container.jsx";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -28,18 +30,18 @@ export default function Signup() {
         user: email,
         sessionId: body.sessionId
       });
-      history.push("/");
+      history.push("/events");
       return;
     }
     alert(body.message);
   }
 
   return (
-    <div>
+    <Container>
       {!username ? (
         <div>
           <Form>
-            <h2>Sign Up</h2>
+            <TitleMedium>Sign Up</TitleMedium>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
@@ -48,7 +50,7 @@ export default function Signup() {
                 onChange={event => setEmail(event.target.value)}
               />
               <Form.Text className="text-muted">
-                We'll never share your email with anyone else.
+                We delete them all emails 24 hours after an event.
               </Form.Text>
             </Form.Group>
 
@@ -75,6 +77,6 @@ export default function Signup() {
       ) : (
         <Home />
       )}
-    </div>
+    </Container>
   );
 }

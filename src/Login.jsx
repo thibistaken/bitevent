@@ -3,7 +3,9 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import Home from "./Home.jsx";
+import Events from "./Events.jsx";
+import TitleMedium from "./styles/TitleMedium.jsx";
+import Container from "./styles/Container.jsx";
 
 export default function Login() {
   const [email, setEmail] = useState(undefined);
@@ -27,18 +29,18 @@ export default function Login() {
         email: email,
         sessionId: body.sessionId
       });
-      history.push("/");
+      history.push("/events");
       return;
     }
     alert(body.message);
   }
 
   return (
-    <div>
+    <Container>
       {!loggedIn ? (
         <div>
           <Form>
-            <h2>Log In</h2>
+            <TitleMedium>Log In</TitleMedium>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
@@ -69,8 +71,8 @@ export default function Login() {
           </p>
         </div>
       ) : (
-        <Home />
+        <Events />
       )}
-    </div>
+    </Container>
   );
 }

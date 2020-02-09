@@ -108,9 +108,7 @@ export default function Create() {
                 as="select"
                 onClick={event => setLocation(event.target.value)}
               >
-                <option value="Montreal" defaultValue>
-                  Montreal
-                </option>
+                <option value="Montreal">Montreal</option>
                 <option value="Toronto">Toronto</option>
                 <option value="Ottawa">Ottawa</option>
                 <option value="Quebec City">Quebec City</option>
@@ -133,9 +131,7 @@ export default function Create() {
                 as="select"
                 onClick={event => setCategory(event.target.value)}
               >
-                <option value="Bitcoin Meetup" defaultValue>
-                  Bitcoin Meetup
-                </option>
+                <option value="Bitcoin Meetup">Bitcoin Meetup</option>
                 <option value="Conference">Conference</option>
                 <option value="Socratic Seminar">Socratic Seminar</option>
                 <option value="Schelling Dinner">Schelling Dinner</option>
