@@ -35,6 +35,9 @@ export default function NavBar() {
     alert(body.message);
   }
 
+  const btnStyle = { marginLeft: "10px" };
+  const cursorHover = { cursor: "pointer" };
+
   return (
     <div>
       <Navbar bg="light">
@@ -62,10 +65,14 @@ export default function NavBar() {
           </>
         ) : (
           <>
-            <LinkContainer to="/profile">
+            <LinkContainer to="/profile" style={cursorHover}>
               <Navbar.Text>Signed in as: {user}</Navbar.Text>
             </LinkContainer>
-            <Button variant="outline-danger" onClick={() => handleLogOut()}>
+            <Button
+              variant="outline-danger"
+              style={btnStyle}
+              onClick={() => handleLogOut()}
+            >
               Logout
             </Button>
           </>

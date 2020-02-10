@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
 import TitleMedium from "./styles/TitleMedium.jsx";
 import ContainerEvents from "./styles/ContainerEvents.jsx";
+import SearchBarContainer from "./styles/SearchBarContainer.jsx";
+import SearchResultsContainer from "./styles/SearchResultsContainer.jsx";
 import EventCard from "./EventCard.jsx";
 import "./Events.css";
 
@@ -77,9 +79,9 @@ export default function Events() {
     <div>
       {username ? (
         <ContainerEvents>
-          <div>
+          <SearchBarContainer>
             <TitleMedium>Discover Bitcoin Events</TitleMedium>
-            <Form inline>
+            <Form>
               <Form.Control
                 type="text"
                 placeholder="Search"
@@ -154,21 +156,19 @@ export default function Events() {
                 Search
               </Button>
             </Form>
-          </div>
-          <div>
-            {eventsFiltered.length === 0 ? (
-              <div>
-                Sorry, no events! Go <Link to="/new/event">create one</Link>{" "}
-                now!
-              </div>
-            ) : (
-              <div className="events-wrapper">
-                {eventsFiltered.map((event, idx) => {
-                  return <EventCard event={event} />;
-                })}
-              </div>
-            )}
-          </div>
+          </SearchBarContainer>
+
+          {eventsFiltered.length === 0 ? (
+            <div>
+              Sorry, no events! Go <Link to="/new/event">create one</Link> now!
+            </div>
+          ) : (
+            <SearchResultsContainer>
+              {eventsFiltered.map((event, idx) => {
+                return <EventCard event={event} />;
+              })}
+            </SearchResultsContainer>
+          )}
         </ContainerEvents>
       ) : (
         <>

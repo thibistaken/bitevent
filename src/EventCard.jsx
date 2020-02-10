@@ -10,12 +10,14 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch } from "react-redux";
+import Badge from "react-bootstrap/Badge";
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345
+    width: 300,
+    margin: 10
   },
   media: {
-    height: 140
+    height: 120
   }
 });
 
@@ -43,6 +45,7 @@ export default function EventCard(props) {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
+            {capacity === 0 ? <Badge variant="danger">Sold Out</Badge> : false}{" "}
             {name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">

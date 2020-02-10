@@ -7,7 +7,8 @@ import Paragraph from "./styles/Paragraph.jsx";
 import Container from "./styles/Container.jsx";
 import ImageRotateHome from "./styles/ImageRotateHome.jsx";
 import FlexSection from "./styles/FlexSection.jsx";
-
+import { LinkContainer } from "react-router-bootstrap";
+import Button from "react-bootstrap/Button";
 function Home() {
   const loggedIn = useSelector(state => state.user);
 
@@ -18,9 +19,9 @@ function Home() {
         <Paragraph>
           Meet local bitcoiners in your city. Starting in Montreal.
         </Paragraph>
-        <StyledLink>
-          <Link to="/signup">> Create an account</Link>
-        </StyledLink>
+        <LinkContainer to="/signup">
+          <Button variant="primary">Join Now for Free</Button>
+        </LinkContainer>
       </div>
       {loggedIn ? (
         <StyledLink>

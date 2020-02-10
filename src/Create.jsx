@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Login from "./Login.jsx";
+import CreateEventContainer from "./styles/CreateEventContainer.jsx";
 import "./Create.css";
 
 export default function Create() {
@@ -52,7 +53,7 @@ export default function Create() {
   return (
     <div>
       {username ? (
-        <div className="form-wrapper">
+        <CreateEventContainer>
           <Form>
             <h1>Create an Event</h1>
             <Form.Group controlId="formBasicName">
@@ -158,7 +159,7 @@ export default function Create() {
               Submit
             </Button>
           </Form>
-        </div>
+        </CreateEventContainer>
       ) : (
         <Login />
       )}
